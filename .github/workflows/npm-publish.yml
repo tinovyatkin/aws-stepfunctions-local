@@ -35,7 +35,7 @@ jobs:
 
       - name: Set the version
         run: |
-          npm version $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -oP 'Version \K\d+\.\d+\.\d+') --force
+          npm version $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+') --force
 
       - run: npm publish
         env:
