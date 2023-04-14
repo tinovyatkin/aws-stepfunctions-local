@@ -45,17 +45,21 @@ jobs:
           npm version $version --force
           echo "new-version=$version" >> "$GITHUB_OUTPUT"
 
-      - run: |
-          npm pack --dry-run
-          echo "Current version: ${{ steps.get-version.outputs.new-version }}"
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+      - name: Get changelog line
+        id: get-changelog
+        run: |
+          changelog=$(grep -Po "Version: ${{ steps.get-version.outputs.new-version }} - \K.+" README.txt)
+          echo $changelog
+          echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
 
       - uses: ncipollo/release-action@v1
         with:
           artifacts: StepFunctionsLocal.tar.gz
           makeLatest: true
-          omitBody: true
+          body: ${{ steps.get-changelog.outputs.changelog }}
           tag: v${{ steps.get-version.outputs.new-version }}
           allowUpdates: true
-      # - run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.npm_token}}
