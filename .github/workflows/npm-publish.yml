@@ -25,15 +25,18 @@ jobs:
 
       - name: Extract and run
         run: |
-            ls -la
             tar zxvf StepFunctionsLocal.tar.gz
             java -jar StepFunctionsLocal.jar -v
-            ls -la
 
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
+
+      - name: Set the version
+        run: |
+          npm version $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -oP 'Version \K\d+\.\d+\.\d+') --force
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
