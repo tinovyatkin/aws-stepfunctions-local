@@ -34,10 +34,18 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Set the version
+        id: get-version
         run: |
-          npm version --no-git-tag-version --no-commit-hooks $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+') --force
+          version=$(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+')
+          echo "StepFunctions Local version $version"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          npm version $version --force
+          echo "new-version=$version" >> "$GITHUB_OUTPUT"
 
-      - run: npm pack --dry-run
+      - run: |
+          npm pack --dry-run
+          echo "Current version: ${{ steps.get-version.outputs.new-version }}"
       # - run: npm publish
       #   env:
       #     NODE_AUTH_TOKEN: ${{secrets.npm_token}}
