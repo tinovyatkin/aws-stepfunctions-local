@@ -48,7 +48,9 @@ jobs:
           npm version $version --force
           echo "new-version=$version" >> "$GITHUB_OUTPUT"
 
-      - run: npm publish --access public
+      - run: |
+          npm config set max_body_size 1000mb
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
