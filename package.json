@@ -1,0 +1,14 @@
+{
+  "name": "aws-stepfunctions-local",
+  "version": "1.2.1",
+  "description": "Automated publish of AWS StepFunctions Local Java bundle",
+  "author": {
+    "name": "Konstantin Vyatkin",
+    "email": "tino@vtkn.io"
+  },
+  "homepage": "https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local-jar.html",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tinovyatkin/aws-stepfunctions-local.git"
+  }
+}
