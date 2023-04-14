@@ -4,6 +4,9 @@
 name: Pull StepFunctionLocal and publish as Node.js Package
 
 on:
+  schedule:
+    # run on every day on 6:01
+    - cron: "1 6 * * *"
   push:
     paths:
       - .github/workflows/npm-publish.yml
