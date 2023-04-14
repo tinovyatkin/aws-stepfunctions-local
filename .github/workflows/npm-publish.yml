@@ -35,8 +35,9 @@ jobs:
 
       - name: Set the version
         run: |
-          npm version $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+') --force
+          npm version --no-git-tag-version --no-commit-hooks $(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+') --force
 
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - run: npm pack --dry-run
+      # - run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.npm_token}}

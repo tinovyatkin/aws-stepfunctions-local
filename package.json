@@ -1,7 +1,7 @@
 {
-  "name": "aws-stepfunctions-local",
+  "name": "@sfn-testing/core",
   "version": "0.0.0",
-  "description": "Automated publish of AWS StepFunctions Local Java bundle",
+  "description": "AWS StepFunctions Local Java bundle",
   "author": {
     "name": "Konstantin Vyatkin",
     "email": "tino@vtkn.io"
