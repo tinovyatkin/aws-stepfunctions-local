@@ -14,7 +14,7 @@
   "main": "./StepFunctionsLocal.jar",
   "license": "MIT",
   "files": [
-    "StepFunctionsLocal.tar.gz"
+    "*.jar"
   ],
   "publishConfig": {
     "access": "public"
