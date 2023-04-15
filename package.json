@@ -1,6 +1,6 @@
 {
   "name": "@sfn-testing/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "AWS StepFunctions Local Java bundle",
   "author": {
     "name": "Konstantin Vyatkin",
