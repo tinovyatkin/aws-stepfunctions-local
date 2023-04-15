@@ -1,6 +1,6 @@
 {
   "name": "@sfn-testing/core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "AWS StepFunctions Local Java bundle",
   "author": {
     "name": "Konstantin Vyatkin",
@@ -11,5 +11,12 @@
     "type": "git",
     "url": "git@github.com:tinovyatkin/aws-stepfunctions-local.git"
   },
-  "main": "./StepFunctionsLocal.jar"
+  "main": "./StepFunctionsLocal.jar",
+  "jdeploy": {
+    "jar": "StepFunctionsLocal.jar"
+  },
+  "dependencies": {
+    "shelljs": "^0.8.5"
+  },
+  "license": "MIT"
 }
