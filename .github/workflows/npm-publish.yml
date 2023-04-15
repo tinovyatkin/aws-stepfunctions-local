@@ -10,6 +10,7 @@ on:
   push:
     paths:
       - .github/workflows/npm-publish.yml
+      - package.json
 
 jobs:
   download-and-publish:
@@ -60,15 +61,10 @@ jobs:
           echo $changelog
           echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
 
-      # - name: Publish with jdeploy
-      #   run: |
-      #     npm pkg set jdeploy.commitHash="$GITHUB_SHA"
-      #     npx -y jdeploy publish
-
-      # - uses: ncipollo/release-action@v1
-      #   with:
-      #     artifacts: StepFunctionsLocal.tar.gz
-      #     makeLatest: true
-      #     body: ${{ steps.get-changelog.outputs.changelog }}
-      #     tag: v${{ steps.get-version.outputs.new-version }}
-      #     allowUpdates: true
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: StepFunctionsLocal.tar.gz
+          makeLatest: true
+          body: ${{ steps.get-changelog.outputs.changelog }}
+          tag: v${{ steps.get-version.outputs.new-version }}
+          allowUpdates: true
