@@ -22,7 +22,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
 
       - name: Download and verify StepFunctions Local
         # https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local-jar.html
