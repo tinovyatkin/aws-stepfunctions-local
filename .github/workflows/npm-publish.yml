@@ -62,7 +62,7 @@ jobs:
           echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
 
       - name: Build App Installer Bundles
-        uses: actions/jdeploy@master
+        uses: shannah/jdeploy@master
         with:
           deploy_target: npm
           npm_token: ${{secrets.npm_token}}
