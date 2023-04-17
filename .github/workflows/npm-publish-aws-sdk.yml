@@ -64,11 +64,8 @@ jobs:
           # cd sdk
           # zip -9 -r -m -q ../AwsSdkJava.jar *
         run: |
-          pack200 --help || echo "no pack200"
-          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
-          cd sdk
-          for f in ./*.jar; do jar -xf $f && rm $f; done
-          jar cf ../AwsSdkJava.jar *
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=.
+          for f in ./*.jar; do pack200 --repack --strip-debug $f; done
 
       - run: |
           npm publish --dry-run
