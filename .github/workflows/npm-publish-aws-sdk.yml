@@ -62,9 +62,9 @@ jobs:
           # cd sdk
           # for f in ./*.jar; do jar -xf $f && rm $f; done
         run: |
-          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk -DexcludeTransitive=true
           cd sdk
-          zip -9 -r -m ../AwsSdkJava.jar *
+          zip -9 -r -m -q ../AwsSdkJava.jar *
 
       - run: |
           npm publish --dry-run
