@@ -50,10 +50,11 @@ jobs:
 
       - name: Set the version
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
+          # npm version ${{steps.awssdk.outputs.version}} --force
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          npm version ${{steps.awssdk.outputs.version}} --force
+          npm version 0.0.1 --force
 
       - name: Prepare AWS SDK for Java contents
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
@@ -68,7 +69,7 @@ jobs:
           for f in ./*.jar; do pack200 --repack --strip-debug $f; done
 
       - run: |
-          npm publish --dry-run
+          npm publish
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
