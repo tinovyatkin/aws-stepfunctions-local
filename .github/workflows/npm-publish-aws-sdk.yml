@@ -58,13 +58,13 @@ jobs:
       - name: Prepare AWS SDK for Java contents
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
           # mkdir sdk
-          # mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
           # cd sdk
           # for f in ./*.jar; do jar -xf $f && rm $f; done
+          # mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk -DexcludeTransitive=true
+          # cd sdk
+          # zip -9 -r -m -q ../AwsSdkJava.jar *
         run: |
-          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk -DexcludeTransitive=true
-          cd sdk
-          zip -9 -r -m -q ../AwsSdkJava.jar *
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=.
 
       - run: |
           npm publish --dry-run
