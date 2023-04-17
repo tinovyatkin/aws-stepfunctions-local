@@ -1,0 +1,76 @@
+name: Pull AWS SDK for Java and publish as Node.js Package
+
+on:
+  schedule:
+    # run on every day on 5:01
+    - cron: "1 5 * * *"
+  push:
+    paths:
+      - .github/workflows/npm-publish-aws-sdk.yml
+      - packages/aws-java-sdk/**
+
+defaults:
+ run:
+  working-directory: ./packages/aws-java-sdk
+
+jobs:
+  download-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Download AWS SDK for Java
+        # https://github.com/aws/aws-sdk-java-v2
+        id: awssdk
+        run: |
+          mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get -Dartifact=software.amazon.awssdk:aws-sdk-java:LATEST:pom -Ddest=.
+          AWS_SDK_VERSION=$(mvn help:evaluate -Dartifact=software.amazon.awssdk:aws-sdk-java:LATEST -Dexpression=project.version -q -DforceStdout)
+          echo "AWS SDK for Java latest version is $AWS_SDK_VERSION"
+          echo "version=$AWS_SDK_VERSION" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+
+      - name: Get current version published to NPM
+        id: npm-published
+        run: |
+          PACKAGE_NAME=$(jq -r .name package.json)
+          echo "Publishing as PACKAGE_NAME$"
+          PUBLISHED_VERSION=$(npm show $PACKAGE_NAME version || echo 0.0.0)
+          echo "Currently published version is $PUBLISHED_VERSION"
+          echo "version=$PUBLISHED_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set the version
+        if: awssdk.outputs.version != npm-published.outputs.version
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          npm version ${{awssdk.outputs.version}} --force
+
+      - run: |
+          npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+      # - name: Get changelog line
+      #   id: get-changelog
+      #   run: |
+      #     changelog=$(grep -Po "Version: ${{ steps.get-version.outputs.new-version }} - \K.+" README.txt)
+      #     echo $changelog
+      #     echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
+
+      # - uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: StepFunctionsLocal.tar.gz
+      #     makeLatest: true
+      #     body: ${{ steps.get-changelog.outputs.changelog }}
+      #     tag: v${{ steps.get-version.outputs.new-version }}
+      #     allowUpdates: true
