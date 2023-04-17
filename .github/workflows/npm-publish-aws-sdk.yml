@@ -49,11 +49,11 @@ jobs:
           echo "version=$PUBLISHED_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set the version
-        if: awssdk.outputs.version != npm-published.outputs.version
+        if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          npm version ${{awssdk.outputs.version}} --force
+          npm version ${{steps.awssdk.outputs.version}} --force
 
       - run: |
           npm publish --dry-run
