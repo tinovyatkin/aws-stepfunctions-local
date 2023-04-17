@@ -66,20 +66,13 @@ jobs:
           # zip -9 -r -m -q ../AwsSdkJava.jar *
         run: |
           mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=.
-          for f in ./*.jar; do pack200 --repack --strip-debug $f; done
+          for f in ./*.jar; do pack200 --repack --effort=9 --strip-debug $f; done
 
       - run: |
           npm publish
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-
-      # - name: Get changelog line
-      #   id: get-changelog
-      #   run: |
-      #     changelog=$(grep -Po "Version: ${{ steps.get-version.outputs.new-version }} - \K.+" README.txt)
-      #     echo $changelog
-      #     echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
 
       # - uses: ncipollo/release-action@v1
       #   with:
