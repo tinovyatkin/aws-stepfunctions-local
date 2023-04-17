@@ -15,7 +15,8 @@
   "publishConfig": {
     "access": "public"
   },
+  "main": "./AwsSdkJava.jar",
   "files": [
-    "sdk/"
+    "AwsSdkJava.jar"
   ]
 }

@@ -29,7 +29,7 @@ jobs:
         # https://github.com/aws/aws-sdk-java-v2
         id: awssdk
         run: |
-          mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get -Dartifact=software.amazon.awssdk:aws-sdk-java:LATEST:pom -Ddest=.
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:get -Dartifact=software.amazon.awssdk:aws-sdk-java:LATEST:pom -Ddest=.
           AWS_SDK_VERSION=$(mvn help:evaluate -Dartifact=software.amazon.awssdk:aws-sdk-java:LATEST -Dexpression=project.version -q -DforceStdout)
           echo "AWS SDK for Java latest version is $AWS_SDK_VERSION"
           echo "version=$AWS_SDK_VERSION" >> "$GITHUB_OUTPUT"
@@ -56,14 +56,19 @@ jobs:
           npm version ${{steps.awssdk.outputs.version}} --force
 
       - name: Prepare AWS SDK for Java contents
+        if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
+          # mkdir sdk
+          # mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
+          # cd sdk
+          # for f in ./*.jar; do jar -xf $f && rm $f; done
         run: |
-          mkdir sdk
-          mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
           cd sdk
-          for f in ./*.jar; do jar -xvf $f && rm $f; done
+          zip -9 -r -m ../AwsSdkJava.jar *
 
       - run: |
           npm publish --dry-run
+        if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
