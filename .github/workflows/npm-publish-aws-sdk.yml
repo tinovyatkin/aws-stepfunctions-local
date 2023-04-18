@@ -72,12 +72,12 @@ jobs:
             -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom \
             -DoutputDirectory=./sdk \
             -DexcludeTransitive=true \
-            -DexcludeArtifactIds=iot,iot1clickdevices,iot1clickprojects,iotanalytics,iotdataplane,iotjobsdataplane,iotroborunner,lightsail,migrationhub,resiliencehub,securityhub,guardduty,storagegateway,transcribe,wellarchitected,workmail,appflow,appmesh,apprunner,appstream,chime,connect,rekognition,ivsrealtime
+            -DexcludeArtifactIds=iot,iot1clickdevices,iot1clickprojects,iotanalytics,iotdataplane,iotjobsdataplane,iotroborunner,iotfleethub,lightsail,migrationhub,resiliencehub,securityhub,guardduty,storagegateway,transcribe,wellarchitected,workmail,appflow,appmesh,apprunner,appstream,chime,connect,rekognition,ivsrealtime
           cd ./sdk
           zip -r -m -q ../AwsSdkJava.jar *
           cd ..
           ls -la
-          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar
+          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar -J-Xms128m -J-Xmx2048m -J-XX:PermSize=265m -J-XX:MaxPermSize=1024m
           ls -la
 
       - run: |
