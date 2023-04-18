@@ -60,14 +60,22 @@ jobs:
         if: steps.awssdk.outputs.version != steps.npm-published.outputs.version
           # mkdir sdk
           # cd sdk
-          # for f in ./*.jar; do jar -xf $f && rm $f; done
           # mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk -DexcludeTransitive=true
+          # for f in ./*.jar; do pack200 --repack --effort=9 --strip-debug $f; done
+          # mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=./sdk
+          # rm -rf iot* lightsail* migrationhub* securityhub* storagegateway* transcribe* wellarchitected* workmail* appflow* appmesh* apprunner* appstream* chime* connect* rekognition* work* resiliencehub* media* marketplace* lexmodel* guardduty* alexa*
+          # for f in ./*.jar; do jar -xf $f && rm $f; done
           # cd sdk
-          # zip -9 -r -m -q ../AwsSdkJava.jar *
         run: |
-          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=.
-          rm -rf iot* lightsail* migrationhub* securityhub* storagegateway* transcribe* wellarchitected* workmail* appflow* appmesh* apprunner* appstream* chime* connect*
-          for f in ./*.jar; do pack200 --repack --effort=9 --strip-debug $f; done
+          mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies \
+            -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom \
+            -DoutputDirectory=./sdk \
+            -DexcludeTransitive=true \
+            -DexcludeArtifactIds=iot,lightsail,migrationhub,resiliencehub,securityhub,guardduty,storagegateway,transcribe,wellarchitected,workmail,appflow,appmesh,apprunner,appstream,chime,connect,rekognition
+          jar cf AwsSdkJava.jar -c sdk .
+          ls -la
+          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar
+          ls -la
 
       - run: |
           npm publish
