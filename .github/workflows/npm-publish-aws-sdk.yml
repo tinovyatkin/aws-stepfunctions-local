@@ -67,16 +67,18 @@ jobs:
           # for f in ./*.jar; do jar -xf $f && rm $f; done
           # cd sdk
           # jar cf AwsSdkJava.jar -c sdk .
-          # zip -r -m -q ../AwsSdkJava.jar *
-          # pack200 --repack --effort=9 --modification-time=latest --strip-debug --unknown-attribute=strip --class-attribute=SourceFile=RUH AwsSdkJava.jar -J-Xms128m -J-Xmx7g
         run: |
           mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack-dependencies \
             -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom \
             -DoutputDirectory=./sdk \
             -DexcludeTransitive=true \
             -DexcludeArtifactIds=iot,iot1clickdevices,iot1clickprojects,iotanalytics,iotdataplane,iotjobsdataplane,iotroborunner,iotfleethub,appintegrations,lightsail,migrationhub,resiliencehub,securityhub,guardduty,storagegateway,transcribe,wellarchitected,workmail,appflow,appmesh,apprunner,appstream,chime,connect,rekognition,ivsrealtime
-          cd sdk
-          jar cf ../AwsSdkJava.jar $(find . -name '*.class')  
+          cd ./sdk
+          zip -r -m -q ../AwsSdkJava.jar * -x META_INF/*
+          cd ..
+          ls -la
+          pack200 --repack --effort=9 --modification-time=latest --strip-debug AwsSdkJava.jar -J-Xms128m -J-Xmx7g
+          ls -la
 
       - run: |
           npm publish
