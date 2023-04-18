@@ -77,7 +77,7 @@ jobs:
           zip -r -m -q ../AwsSdkJava.jar *
           cd ..
           ls -la
-          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar -J-Xms128m -J-Xmx2048m -J-XX:PermSize=265m -J-XX:MaxPermSize=1024m
+          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar -J-Xms128m -J-Xmx7g -J-XX:-UseParallelGC -J-XX:+UseSerialGC
           ls -la
 
       - run: |
