@@ -4,9 +4,9 @@
 name: Pull StepFunctionLocal and publish as Node.js Package
 
 on:
-  schedule:
+  # schedule:
     # run on every day on 6:01
-    - cron: "1 6 * * *"
+    # - cron: "1 6 * * *"
   push:
     paths:
       - .github/workflows/npm-publish.yml
@@ -39,32 +39,33 @@ jobs:
           node-version: 18
           registry-url: https://registry.npmjs.org/
 
-      - name: Set the version
-        id: get-version
-        run: |
-          version=$(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+')
-          echo "StepFunctions Local version $version"
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          # npm version $version --force
-          echo "new-version=$version" >> "$GITHUB_OUTPUT"
+      # - name: Set the version
+      #   id: get-version
+      #   run: |
+      #     version=$(java -jar StepFunctionsLocal.jar -v | grep -m 1 -Po '(?<=Version: )\d+.\d+.\d+')
+      #     echo "StepFunctions Local version $version"
+      #     git config user.name github-actions
+      #     git config user.email github-actions@github.com
+      #     # npm version $version --force
+      #     echo "new-version=$version" >> "$GITHUB_OUTPUT"
+
 
       - run: |
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
-      - name: Get changelog line
-        id: get-changelog
-        run: |
-          changelog=$(grep -Po "Version: ${{ steps.get-version.outputs.new-version }} - \K.+" README.txt)
-          echo $changelog
-          echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
+      # - name: Get changelog line
+      #   id: get-changelog
+      #   run: |
+      #     changelog=$(grep -Po "Version: ${{ steps.get-version.outputs.new-version }} - \K.+" README.txt)
+      #     echo $changelog
+      #     echo "changelog=$changelog" >> "$GITHUB_OUTPUT"
 
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: StepFunctionsLocal.tar.gz
-          makeLatest: true
-          body: ${{ steps.get-changelog.outputs.changelog }}
-          tag: v${{ steps.get-version.outputs.new-version }}
-          allowUpdates: true
+      # - uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: StepFunctionsLocal.tar.gz
+      #     makeLatest: true
+      #     body: ${{ steps.get-changelog.outputs.changelog }}
+      #     tag: v${{ steps.get-version.outputs.new-version }}
+      #     allowUpdates: true

@@ -1,9 +1,9 @@
 name: Pull AWS SDK for Java and publish as Node.js Package
 
 on:
-  schedule:
+  # schedule:
     # run on every day on 5:01
-    - cron: "1 5 * * *"
+    # - cron: "1 5 * * *"
   push:
     paths:
       - .github/workflows/npm-publish-aws-sdk.yml
@@ -66,6 +66,7 @@ jobs:
           # zip -9 -r -m -q ../AwsSdkJava.jar *
         run: |
           mvn --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:2.8:copy-dependencies -f ./aws-sdk-java-${{steps.awssdk.outputs.version}}.pom -DoutputDirectory=.
+          rm -rf iot* lightsail* migrationhub* securityhub* storagegateway* transcribe* wellarchitected* workmail* appflow* appmesh* apprunner* appstream* chime* connect*
           for f in ./*.jar; do pack200 --repack --effort=9 --strip-debug $f; done
 
       - run: |
