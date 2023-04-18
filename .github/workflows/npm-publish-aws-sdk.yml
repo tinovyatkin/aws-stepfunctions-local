@@ -77,7 +77,7 @@ jobs:
           zip -r -m -q ../AwsSdkJava.jar *
           cd ..
           ls -la
-          pack200 --repack --effort=9 --strip-debug AwsSdkJava.jar -J-Xms128m -J-Xmx7g -J-XX:-UseParallelGC -J-XX:+UseSerialGC
+          pack200 --repack --effort=9 --modification-time=latest --strip-debug --unknown-attribute=strip --class-attribute=SourceFile=RUH AwsSdkJava.jar -J-Xms128m -J-Xmx7g
           ls -la
 
       - run: |
