@@ -34,7 +34,7 @@ jobs:
           echo "AWS SDK for Java latest version is $AWS_SDK_VERSION"
           echo "version=$AWS_SDK_VERSION" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
